@@ -1,0 +1,11 @@
+{
+    "emmet.syntaxProfiles": {
+ 
+    },
+    "liveServer.settings.AdvanceCustomBrowserCmdLine": "",
+    "emmet.includeLanguages": {
+        "javascript": "javascriptreact",
+        "typescript": "typescriptreact"
+      },
+    
+}
