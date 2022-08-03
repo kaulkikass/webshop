@@ -1,20 +1,29 @@
-import productsFromFile from '../products.json';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import {Link} from 'react-router-dom';
 
 function HomePage() {
-    const [products, setProducts] = useState(productsFromFile);
+    //käitub nagu productsFromFile, ehk kogu aeg on originaalsed tooted sees
+    const [databaseProducts, setDatabaseProducts] = useState([]); 
+     // on kogu aeg muutuvas seisundis(filtreeritakse/sorteeritakse jne)
+    const [products, setProducts] = useState([]);
                     //---.map tagastab -- returns
-    const categories =[...new Set(productsFromFile.map(element => element.category))];
+    const categories =[...new Set(databaseProducts.map(element => element.category))];
     const [selectedCategory, setSelectedCategory] = useState('all');
-
+    const productsDb = 'https://react-webshop-07-22-default-rtdb.europe-west1.firebasedatabase.app/products.json';
 
     //[].map ( => uus_väärtus)  
     //[].sort( => pluss/miinus ) võrdleb, kas tuleb miinus märgiga või plussiga tehe
     //[].filter( => true/false )  vaatab, kas vaste sobib voi ei
+    
+    //uef on lühend
+    useEffect(() => {
+        fetch(productsDb)
+        .then(response => response.json())
+        .then(data => {setProducts(data); setDatabaseProducts(data);});
+    }, []);
 
     //sort muteerib --mutates
     const sortAZ = () => {
@@ -40,9 +49,9 @@ function HomePage() {
 
     const filterByCategory = (catergoryClicked) => {
         if (catergoryClicked === 'all') {
-            setProducts(productsFromFile);
+            setProducts(databaseProducts);
         } else {
-            const result = productsFromFile.filter(element => element.category === catergoryClicked)
+            const result = databaseProducts.filter(element => element.category === catergoryClicked)
             setProducts(result);
         }
         setSelectedCategory(catergoryClicked);

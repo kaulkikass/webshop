@@ -3,13 +3,25 @@
 //2- faili - logide (salvestatakse kasutaja iga klikk ja andmesisestus)
 //3- andmebaas - kasutajad, tooted, tellimused, kategooriad, administraatorid, poed)
 
-import { useRef, useState } from 'react';
+import { useRef, useState,useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import productsFromFile from '../../products.json';
+
 
 
 function MaintainProducts() {
-    const [products, setProducts] = useState(productsFromFile);
+    //käitub nagu productsFromFile, ehk kogu aeg on originaalsed tooted sees
+    const [databaseProducts, setDatabaseProducts] = useState([]); 
+     // on kogu aeg muutuvas seisundis(filtreeritakse/sorteeritakse jne)
+    const [products, setProducts] = useState([]);
+    const productsDb = 'https://react-webshop-07-22-default-rtdb.europe-west1.firebasedatabase.app/products.json';
+     //uef on lühend
+     useEffect(() => {
+        fetch(productsDb)
+        .then(response => response.json())
+        .then(data => {setProducts(data); setDatabaseProducts(data);});
+    }, []);
+
+
     const searchedRef = useRef();
 
     const deleteProduct = (index) => {
@@ -20,7 +32,7 @@ function MaintainProducts() {
 
     // 'elas metsas mutionu'.indexOf('metsast') --> 4
     const searchProducts = () => {
-        const result = productsFromFile.filter(element => 
+        const result = databaseProducts.filter(element => 
             element.name.toLowerCase().indexOf(searchedRef.current.value.toLowerCase()) >= 0);
         setProducts(result);
     }

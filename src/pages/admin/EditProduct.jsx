@@ -1,15 +1,11 @@
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import {useParams, useNavigate} from 'react-router-dom';
-import productsFromFile from '../../products.json';
+
+import categoriesFromFile from '../../categories.json';
 
 function EditProduct() {
+    const [idUnique,setIdUnique] = useState(true);
     const { id } = useParams();  // /admin/muuda/:id
-    const products = productsFromFile;
-    const index = productsFromFile.findIndex(element => element.id === Number(id));
-    const product = productsFromFile[index];
-    const categories =[...new Set(productsFromFile.map(element => element.category))];
-    //Number() sest see id on stringina URList
-    //const product = products.find(element => element.id === Number(id));
     const navigate = useNavigate();
     const idRef = useRef();
     const nameRef = useRef();
@@ -18,9 +14,21 @@ function EditProduct() {
     const categoryRef = useRef();
     const imageRef = useRef();
     const activeRef = useRef();
-    console.log(categories);
+    const [products, setProducts] = useState([]);
+    //Number() sest see id on stringina URList
+    const index = products.findIndex(element => element.id === Number(id));
+    const product = products[index];
+    const productsDb = 'https://react-webshop-07-22-default-rtdb.europe-west1.firebasedatabase.app/products.json';
+    const categories =[...new Set(products.map(element => element.category))];
+    //uef on lühend
+    useEffect(() => {
+        fetch(productsDb)
+        .then(response => response.json())
+        .then(data => 
+            setProducts(data));
+    }, []);
     const edit = () => {
-        productsFromFile[index] = {
+        products[index] = {
             id: idRef.current.value,
             name: nameRef.current.value,
             price: priceRef.current.value,
@@ -32,6 +40,21 @@ function EditProduct() {
         navigate('/admin/halda-tooteid');
     }
 
+    const checkIdUniqueness = () => {
+        // [].find(element => true) annab true elemendi väärtused
+        // [].findIndex(element => true) annab true järjekorranumbri väärtuse
+        if (Number(product.id) === Number(idRef.current.value)) {
+            setIdUnique(true);
+        } else {
+        const index = products.findIndex(element => element.id === Number(idRef.current.value));
+        console.log(index);
+        if (index === -1) {
+            setIdUnique(true);
+        } else {
+            setIdUnique(false);
+        } 
+        } 
+    }
     //proovige eesti keelse järgi leida toode üles 
     //const product = 
     //kuvage inputide sees iga toote väärtust
@@ -39,8 +62,10 @@ function EditProduct() {
 
     return ( 
     <div>
+    {product !== undefined && <div>
+        { idUnique === false && <div>Sisestasid mitteunikaalse ID!</div>}
         <label>ID</label>
-        <input ref={idRef} defaultValue={product.id} type="text" />
+        <input onChange={checkIdUniqueness} ref={idRef} defaultValue={product.id} type="text" />
         <label>Name</label>
         <input ref={nameRef} defaultValue={product.name} type="text" />
         <label>Price</label>
@@ -49,13 +74,15 @@ function EditProduct() {
         <input ref={descriptionRef} defaultValue={product.description} type="text" />
         <label>Category</label>
         {/* <input ref={categoryRef} defaultValue={product.category} type="text" /> */}
-        <select ref={categoryRef} defaultValue={product.category}>{categories.map(element =>(<option>{element}</option>))}</select>
+        {/* <select ref={categoryRef} defaultValue={product.category}>{categories.map(element =>(<option>{element}</option>))}</select> */}
+        <select ref={categoryRef} defaultValue={product.category}>{categories.map(element => <option key={element}>{element}</option>)}</select>
         <label>Image</label>
         <input ref={imageRef} defaultValue={product.image} type="text" />
         <label>Active</label>
         <input ref={activeRef} defaultValue={product.active} type="checkbox" />
-        <button onClick={edit}>Muuda</button>
-    </div> 
+        <button disabled={idUnique === false} onClick={edit}>Muuda</button>
+    </div>}
+    </div>
     );
 }
 
