@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Button } from 'react-bootstrap';
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
+import {Link} from 'react-router-dom';
 
 function HomePage() {
     const [products, setProducts] = useState(productsFromFile);
@@ -92,9 +93,11 @@ function HomePage() {
         <div>{products.length} toodet leitud</div>
         {products.map(element => 
         <div key={element.id}>
+            <Link to = {"/toode/" + element.id}>
             <img src={element.image} alt="" />
             <div>{element.name}</div>
             <div>{element.price}</div>
+            </Link>
             <Button variant='success' onClick={() => addToCart(element)}>Lisa ostukorvi</Button>
         </div>
         )};

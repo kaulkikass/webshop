@@ -1,9 +1,10 @@
 import { useRef, useState } from "react";
 import omnivaParcelMachines from '../omniva.json';
+import smartpostParcelMachines from '../smartpost.json';
 
 function Cart() {
     const [cart, setCart] = useState(JSON.parse(sessionStorage.getItem('cart')) || []);
-    const parcelMachines = omnivaParcelMachines.filter(element => element.A0_NAME === 'EE');
+    const omnivasParcelMachines = omnivaParcelMachines.filter(element => element.A0_NAME === 'EE');
 
     const increaseQuantity = (index) => {
         cart[index].quantity = cart[index].quantity + 1;
@@ -58,8 +59,10 @@ function Cart() {
             <div>{element.quantity * element.product.price}</div>
             <button onClick={() => deleteProduct(index)}>x</button>
         </div>)}
-
-        {selectedPM === '' && <select onChange={selectPM} ref={pmRef}>{parcelMachines.map(element => <option>{element.NAME}</option>)}</select>}
+        {selectedPM === '' && <div>Omniva pakiautomaadid:</div>}
+        {selectedPM === '' && <select onChange={selectPM} ref={pmRef}>{omnivasParcelMachines.map(element => <option>{element.NAME}</option>)}</select>}
+        {selectedPM === '' && <div>Smartpost pakiautomaadid:</div>}
+        {selectedPM === '' && <select onChange={selectPM} ref={pmRef}>{smartpostParcelMachines.map(element => <option>{element.name}</option>)}</select>}
         {selectedPM !== '' && <div>{selectedPM} <button onClick={() => unSelectPM()}>X</button></div>}
         <div>{calculateCartSum()} $</div>
     </div> 

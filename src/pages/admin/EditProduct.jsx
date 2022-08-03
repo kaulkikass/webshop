@@ -1,12 +1,13 @@
 import { useRef } from 'react';
 import {useParams, useNavigate} from 'react-router-dom';
-import productsFromFail from '../../products.json';
+import productsFromFile from '../../products.json';
 
 function EditProduct() {
     const { id } = useParams();  // /admin/muuda/:id
-    const products = productsFromFail
-    const index = productsFromFail.findIndex(element => element.id === Number(id));
-    const product = productsFromFail[index];
+    const products = productsFromFile;
+    const index = productsFromFile.findIndex(element => element.id === Number(id));
+    const product = productsFromFile[index];
+    const categories =[...new Set(productsFromFile.map(element => element.category))];
     //Number() sest see id on stringina URList
     //const product = products.find(element => element.id === Number(id));
     const navigate = useNavigate();
@@ -17,9 +18,9 @@ function EditProduct() {
     const categoryRef = useRef();
     const imageRef = useRef();
     const activeRef = useRef();
-
+    console.log(categories);
     const edit = () => {
-        productsFromFail[index] = {
+        productsFromFile[index] = {
             id: idRef.current.value,
             name: nameRef.current.value,
             price: priceRef.current.value,
@@ -47,7 +48,8 @@ function EditProduct() {
         <label>Description</label>
         <input ref={descriptionRef} defaultValue={product.description} type="text" />
         <label>Category</label>
-        <input ref={categoryRef} defaultValue={product.category} type="text" />
+        {/* <input ref={categoryRef} defaultValue={product.category} type="text" /> */}
+        <select ref={categoryRef} defaultValue={product.category}>{categories.map(element =>(<option>{element}</option>))}</select>
         <label>Image</label>
         <input ref={imageRef} defaultValue={product.image} type="text" />
         <label>Active</label>
