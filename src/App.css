@@ -13,3 +13,7 @@
   font-weight: bold;
   text-decoration: underline;
 }
+
+.map {
+  height: 300px;
+}

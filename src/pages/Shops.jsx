@@ -1,5 +1,19 @@
+import { useState } from 'react';
+import Map from '../components/Map';
+
 function Shops() {
-    return ( <div></div> );
+  const [coordinaates, setCoordinates] = useState({lngLat: [59.886, 25.204], zoom: 7});
+
+  return (<div>
+    <button onClick={() => setCoordinates({lngLat: [59.886, 25.204], zoom: 7})}>Kõik poed</button>
+    <button onClick={() => setCoordinates({lngLat: [59.4378, 24.7574], zoom: 11})}>Kõik Tallinna poed</button>
+    <button onClick={() => setCoordinates({lngLat: [59.4231, 24.7991], zoom: 13})}>Ülemiste</button>
+    <button onClick={() => setCoordinates({lngLat: [59.4277, 24.7193], zoom: 13})}>Kristiine</button>
+    <button onClick={() => setCoordinates({lngLat: [60.198, 24.930], zoom: 13})}>Helsinki</button>
+    
+   
+    <Map mapCoordinaates={coordinaates}  />
+  </div>)
 }
 
 export default Shops;

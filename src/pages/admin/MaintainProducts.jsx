@@ -27,6 +27,14 @@ function MaintainProducts() {
     const deleteProduct = (index) => {
         products.splice(index,1);
         setProducts(products.slice());
+        //API Päring edaspidi kustutamiseks
+        fetch(productsDb,{ 
+            method: 'PUT', //pannamakse midagi sinna API otspunktile
+            body: JSON.stringify(products), //mida pannakse
+            headers: { //mis kujul andmed pannakse
+                'Content-Type': 'application/json'
+            }
+        })
     }
 
 

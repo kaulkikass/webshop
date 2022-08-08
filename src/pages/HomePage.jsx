@@ -19,10 +19,13 @@ function HomePage() {
     //[].filter( => true/false )  vaatab, kas vaste sobib voi ei
     
     //uef on lühend
-    useEffect(() => {
-        fetch(productsDb)
-        .then(response => response.json())
-        .then(data => {setProducts(data); setDatabaseProducts(data);});
+    useEffect(() => { // see funktsioon laheb kaima lehele tulles
+        fetch(productsDb) //fetch on alati asünkroonne ( ütleb koodile, et mine edasi)
+        .then(response => response.json()) // staatuskood - 200 /400-404
+        .then(data => {
+            setProducts(data);
+            setDatabaseProducts(data);
+        });
     }, []);
 
     //sort muteerib --mutates

@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import {useParams, useNavigate} from 'react-router-dom';
 
-import categoriesFromFile from '../../categories.json';
+
 
 function EditProduct() {
     const [idUnique,setIdUnique] = useState(true);
@@ -19,7 +19,9 @@ function EditProduct() {
     const index = products.findIndex(element => element.id === Number(id));
     const product = products[index];
     const productsDb = 'https://react-webshop-07-22-default-rtdb.europe-west1.firebasedatabase.app/products.json';
-    const categories =[...new Set(products.map(element => element.category))];
+    
+    const [categories, setCategories] = useState([]);                                  ///!!!! categories
+    const categoriesDb = 'https://react-webshop-07-22-default-rtdb.europe-west1.firebasedatabase.app/categories.json';
     //uef on lühend
     useEffect(() => {
         fetch(productsDb)
@@ -27,6 +29,14 @@ function EditProduct() {
         .then(data => 
             setProducts(data));
     }, []);
+
+    useEffect(() => {
+        fetch(categoriesDb)
+        .then(response => response.json())
+        .then(data => 
+            setCategories(data));
+    }, []);
+
     const edit = () => {
         products[index] = {
             id: idRef.current.value,
@@ -37,7 +47,14 @@ function EditProduct() {
             image: imageRef.current.value,
             active: activeRef.current.value
         };
-        navigate('/admin/halda-tooteid');
+
+        fetch(productsDb,{ 
+            method: 'PUT', //pannamakse midagi sinna API otspunktile
+            body: JSON.stringify(products), //mida pannakse
+            headers: { //mis kujul andmed pannakse
+                'Content-Type': 'application/json'
+            }
+        }).then(() => navigate('/admin/halda-tooteid'))
     }
 
     const checkIdUniqueness = () => {

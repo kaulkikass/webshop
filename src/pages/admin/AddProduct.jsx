@@ -1,6 +1,5 @@
-import { useRef, useState} from 'react';
-import productsFromFail from '../../products.json';
-import categoriesFromFile from '../../categories.json';
+import { useRef, useState, useEffect} from 'react';
+
 
 
 function AddProduct() {
@@ -12,7 +11,26 @@ function AddProduct() {
     const categoryRef = useRef();
     const imageRef = useRef();
     const activeRef = useRef();
+    const productsDb = 'https://react-webshop-07-22-default-rtdb.europe-west1.firebasedatabase.app/products.json';
+    const [products, setProducts] = useState([]);
+    const [categories, setCategories] = useState([]);                                  ///!!!! categories
+    const categoriesDb = 'https://react-webshop-07-22-default-rtdb.europe-west1.firebasedatabase.app/categories.json';
 
+    useEffect(() => {
+        fetch(productsDb)
+        .then(response => response.json())
+        .then(data => 
+            setProducts(data));
+    }, []);
+
+    useEffect(() => {
+        fetch(categoriesDb)
+        .then(response => response.json())
+        .then(data => 
+            setCategories(data));
+    }, []);
+
+    
     const add = () => {
         const newProduct = {
             id: idRef.current.value,
@@ -23,13 +41,24 @@ function AddProduct() {
             image: imageRef.current.value,
             active: activeRef.current.value
         };
-        productsFromFail.push(newProduct);
+        products.push(newProduct);
+            //LISAMINE PEAKS KÄIMA ÄPI PÄRINGU KAUDU  
+            //PUT / POST teha saavad rakendused (localhost:3000), POSTMAN jne.. 
+        fetch(productsDb,{ 
+            method: 'PUT', //pannamakse midagi sinna API otspunktile
+            body: JSON.stringify(products), //mida pannakse
+            headers: { //mis kujul andmed pannakse
+                'Content-Type': 'application/json'
+            }
+        })
     }
+
+
 
     const checkIdUniqueness = () => {
         // [].find(element => true) annab true elemendi väärtused
         // [].findIndex(element => true) annab true järjekorranumbri väärtuse
-        const index = productsFromFail.findIndex(element => element.id === Number(idRef.current.value));
+        const index = products.findIndex(element => element.id === Number(idRef.current.value));
         console.log(index);
         if (index === -1) {
             setIdUnique(true);
@@ -52,7 +81,7 @@ function AddProduct() {
         <label>Category</label><br />
         {/* <input ref={categoryRef} type="text" /> */}
         <select>
-            {categoriesFromFile.map(element => <option>{element.name}</option>)}
+            {categories.map(element => <option>{element.name}</option>)}
         </select> <br />
         <label>Image</label><br />
         <input ref={imageRef} type="text" /> <br />
