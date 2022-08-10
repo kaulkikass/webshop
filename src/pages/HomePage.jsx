@@ -3,6 +3,7 @@ import { Button } from 'react-bootstrap';
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import {Link} from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
 
 function HomePage() {
     //käitub nagu productsFromFile, ehk kogu aeg on originaalsed tooted sees
@@ -78,9 +79,15 @@ function HomePage() {
         }
         cart = JSON.stringify(cart);
         sessionStorage.setItem('cart', cart);
+        toast.error('Edukalt ostukorvi kustutatud', {
+            position: "bottom-right",
+            autoClose: 3000,
+            theme:"dark"
+            });
     }
     return ( 
     <div>
+    <ToastContainer />
         <div 
         className={selectedCategory === 'all' ? 'active-category' : undefined} 
         onClick={() => filterByCategory('all')}>

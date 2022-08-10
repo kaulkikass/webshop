@@ -1,5 +1,5 @@
-import { useParams } from 'react-router-dom';
-import productsFromFail from '../products.json';
+/* import { useParams } from 'react-router-dom';
+import productsFromFail from "../data/products.json";
 
 function SingleProduct() {
     const { id } = useParams();
@@ -38,6 +38,41 @@ function SingleProduct() {
         { product === undefined && <div>Viga toote otsingul</div>}
         <button onClick={() => addToCart(product)}>Lisa ostukorvi</button>
     </div>
+    );
+}
+
+export default SingleProduct; */
+
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+
+function SingleProduct() {
+    const {productId} = useParams();
+    const [product, setProduct] = useState({}) //TYHI OBJEKT
+    const productsDb = 'https://react-webshop-07-22-default-rtdb.europe-west1.firebasedatabase.app/products.json'
+
+    useEffect(() => {
+        fetch(productsDb)
+            .then(res => res.json())
+            .then(data => {
+                const found = data.find(element => Number(element.id) === Number(productId));
+                setProduct(found);
+            })
+    }, [productId]);
+
+
+    return (
+        <div>
+            { product !== undefined && 
+            <div>
+                <img src={product.image} alt=''/>
+                <div>{product.name}</div>
+                <div>{product.price} $</div>
+                <div>{product.category}</div>
+                <div>{product.description}</div>
+            </div>}
+            { product === undefined && <div>Toodet ei leitud!</div>}
+        </div>    
     );
 }
 

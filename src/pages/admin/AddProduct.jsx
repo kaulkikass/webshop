@@ -16,31 +16,27 @@ function AddProduct() {
     const [categories, setCategories] = useState([]);                                  ///!!!! categories
     const categoriesDb = 'https://react-webshop-07-22-default-rtdb.europe-west1.firebasedatabase.app/categories.json';
 
-    useEffect(() => {
+    useEffect(() => {  
         fetch(productsDb)
-        .then(response => response.json())
-        .then(data => 
-            setProducts(data));
-    }, []);
-
-    useEffect(() => {
+        .then(res => res.json())
+        .then(data => setProducts(data)); 
+    
         fetch(categoriesDb)
-        .then(response => response.json())
-        .then(data => 
-            setCategories(data));
-    }, []);
+        .then(res => res.json())
+        .then(data => setCategories(data)); 
+      }, []);
 
     
-    const add = () => {
+      const add = () => {
         const newProduct = {
-            id: idRef.current.value,
-            name: nameRef.current.value,
-            price: priceRef.current.value,
-            description: descriptionRef.current.value,
-            category: categoryRef.current.value,
-            image: imageRef.current.value,
-            active: activeRef.current.value
-        };
+          id: Number(idRef.current.value),
+          name: nameRef.current.value,
+          price: Number(priceRef.current.value),
+          description: descriptionRef.current.value,
+          category: categoryRef.current.value,
+          image: imageRef.current.value,
+          active: activeRef.current.checked
+        }
         products.push(newProduct);
             //LISAMINE PEAKS KÄIMA ÄPI PÄRINGU KAUDU  
             //PUT / POST teha saavad rakendused (localhost:3000), POSTMAN jne.. 
@@ -58,7 +54,7 @@ function AddProduct() {
     const checkIdUniqueness = () => {
         // [].find(element => true) annab true elemendi väärtused
         // [].findIndex(element => true) annab true järjekorranumbri väärtuse
-        const index = products.findIndex(element => element.id === Number(idRef.current.value));
+        const index = products.findIndex(element => Number(element.id) === Number(idRef.current.value));
         console.log(index);
         if (index === -1) {
             setIdUnique(true);
@@ -80,7 +76,7 @@ function AddProduct() {
         <input ref={descriptionRef} type="text" /> <br />
         <label>Category</label><br />
         {/* <input ref={categoryRef} type="text" /> */}
-        <select>
+        <select ref={categoryRef}>
             {categories.map(element => <option>{element.name}</option>)}
         </select> <br />
         <label>Image</label><br />

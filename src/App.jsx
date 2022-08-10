@@ -27,7 +27,7 @@ function App() {
           <Route path='meist' exact element = { <AboutUs /> } />
           <Route path='poed' exact element = { <Shops /> } />
           <Route path='ostukorv' exact element = { <Cart /> } />
-          <Route path='toode/:id' exact element = { <SingleProduct /> } />
+          <Route path='toode/:productId' exact element = { <SingleProduct /> } />
           <Route path='admin' exact element = { <AdminHome /> } />
           <Route path='admin/lisa-toode' exact element = { <AddProduct /> } />
           <Route path='admin/muuda/:id' exact element = { <EditProduct /> } />

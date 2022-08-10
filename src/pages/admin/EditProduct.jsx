@@ -16,7 +16,7 @@ function EditProduct() {
     const activeRef = useRef();
     const [products, setProducts] = useState([]);
     //Number() sest see id on stringina URList
-    const index = products.findIndex(element => element.id === Number(id));
+    const index = products.findIndex(element => Number(element.id) === Number(id));
     const product = products[index];
     const productsDb = 'https://react-webshop-07-22-default-rtdb.europe-west1.firebasedatabase.app/products.json';
     
@@ -39,9 +39,9 @@ function EditProduct() {
 
     const edit = () => {
         products[index] = {
-            id: idRef.current.value,
+            id: Number(idRef.current.value),
             name: nameRef.current.value,
-            price: priceRef.current.value,
+            price: Number(priceRef.current.value),
             description: descriptionRef.current.value,
             category: categoryRef.current.value,
             image: imageRef.current.value,
@@ -92,7 +92,7 @@ function EditProduct() {
         <label>Category</label>
         {/* <input ref={categoryRef} defaultValue={product.category} type="text" /> */}
         {/* <select ref={categoryRef} defaultValue={product.category}>{categories.map(element =>(<option>{element}</option>))}</select> */}
-        <select ref={categoryRef} defaultValue={product.category}>{categories.map(element => <option key={element}>{element}</option>)}</select>
+        <select ref={categoryRef} defaultValue={product.category}>{categories.map(element => <option key={element.id + element.name}>{element.name}</option>)}</select>
         <label>Image</label>
         <input ref={imageRef} defaultValue={product.image} type="text" />
         <label>Active</label>

@@ -1,10 +1,22 @@
-import { useRef, useState } from "react";
-import omnivaParcelMachines from '../omniva.json';
-import smartpostParcelMachines from '../smartpost.json';
+import { useRef, useState, useEffect } from "react";
+/* import omnivaParcelMachines from '../omniva.json'; */
+import styles from '../css/Cart.module.css';
+
+
 
 function Cart() {
     const [cart, setCart] = useState(JSON.parse(sessionStorage.getItem('cart')) || []);
-    const omnivasParcelMachines = omnivaParcelMachines.filter(element => element.A0_NAME === 'EE');
+    const [parcelMachines, setParcelMachines] = useState([]);
+  //const parcelMachines = omnivaParcelMachines.filter(element => element.A0_NAME === "EE");
+
+    useEffect(() => {
+        fetch('https://www.omniva.ee/locations.json') //aadress kuhu teen api päringu
+            .then(res => res.json()) //saan terviktagastuse, kus on staatuskood jne
+            .then (data => {
+                const result = data.filter(element => element.A0_NAME ==='EE');
+                setParcelMachines(result);
+            }) //saan body tagastuse (peab olema [] või {})
+        }, []);
 
     const increaseQuantity = (index) => {
         cart[index].quantity = cart[index].quantity + 1;
@@ -49,22 +61,23 @@ function Cart() {
     return ( 
     <div>
         {cart.map((element,index) => 
-        <div>
-            <img src={element.product.image} alt="" />
-            <div>{element.product.name}</div>
-            <div>{element.product.price}</div>
-            <button onClick={() => decreaseQuantity(index)}>-</button>
-            <div>{element.quantity}</div>
-            <button onClick={() => increaseQuantity(index)}>+</button>
-            <div>{element.quantity * element.product.price}</div>
-            <button onClick={() => deleteProduct(index)}>x</button>
+        <div className={styles.product} key={element.id}>
+            <img className={styles.image} src={element.product.image} alt="" />
+            <div className={styles.name}>{element.product.name}</div>
+            <div className={styles.price}>{element.product.price.toFixed(2)} $</div>
+            <div className={styles.controls}>
+                <img className={styles.button} onClick={() => decreaseQuantity(index)} src={require('../assets/minus-button.png')} alt='minus-sign' />
+                <div>{element.quantity} tk</div>
+                <img className={styles.button} onClick={() => increaseQuantity(index)} src={require('../assets/add.png')} alt="plus-sign"/>
+            </div>
+            <div className={styles.total}>{(element.quantity * element.product.price).toFixed(2)} $</div>
+            <img className={styles.button} onClick={() => deleteProduct(index)} src={require('../assets/cancel.png')} alt='remove'/>
         </div>)}
-        {selectedPM === '' && <div>Omniva pakiautomaadid:</div>}
-        {selectedPM === '' && <select onChange={selectPM} ref={pmRef}>{omnivasParcelMachines.map(element => <option>{element.NAME}</option>)}</select>}
-        {selectedPM === '' && <div>Smartpost pakiautomaadid:</div>}
-        {selectedPM === '' && <select onChange={selectPM} ref={pmRef}>{smartpostParcelMachines.map(element => <option>{element.name}</option>)}</select>}
-        {selectedPM !== '' && <div>{selectedPM} <button onClick={() => unSelectPM()}>X</button></div>}
-        <div>{calculateCartSum()} $</div>
+        <div className={styles.sum}>
+        { selectedPM === "" && cart.length > 0 && <select onChange={selectPM} ref={pmRef}>{parcelMachines.map(element => <option key={element.NAME}>{element.NAME}</option>)}</select>}
+        { selectedPM !== "" && cart.length > 0 && <div>{selectedPM} <button onClick={unSelectPM}>X</button> </div>}
+        { cart.length > 0 && <div>{calculateCartSum().toFixed(2)} $</div>}
+        </div>
     </div> 
     );
 }

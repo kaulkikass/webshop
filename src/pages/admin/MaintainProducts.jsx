@@ -5,6 +5,7 @@
 
 import { useRef, useState,useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
 
 
 
@@ -35,6 +36,11 @@ function MaintainProducts() {
                 'Content-Type': 'application/json'
             }
         })
+        toast.success('Edukalt ostukorvi lisatud', {
+            position: "bottom-right",
+            autoClose: 3000,
+            theme:"dark"
+            });
     }
 
 
@@ -47,6 +53,7 @@ function MaintainProducts() {
 
     return ( 
     <div>
+    <ToastContainer />
         <input onChange={searchProducts} ref={searchedRef} type="text" />
         <span>{products.length}</span>
         {products.map((element, index) =>
