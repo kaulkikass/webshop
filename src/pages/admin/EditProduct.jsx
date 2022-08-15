@@ -27,14 +27,14 @@ function EditProduct() {
         fetch(productsDb)
         .then(response => response.json())
         .then(data => 
-            setProducts(data));
+            setProducts(data || []));
     }, []);
 
     useEffect(() => {
         fetch(categoriesDb)
         .then(response => response.json())
         .then(data => 
-            setCategories(data));
+            setCategories(data || []));
     }, []);
 
     const edit = () => {

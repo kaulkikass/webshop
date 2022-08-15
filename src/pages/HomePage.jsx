@@ -4,6 +4,7 @@ import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import {Link} from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
+import Spinner from '../components/Spinner';
 
 function HomePage() {
     //käitub nagu productsFromFile, ehk kogu aeg on originaalsed tooted sees
@@ -14,18 +15,21 @@ function HomePage() {
     const categories =[...new Set(databaseProducts.map(element => element.category))];
     const [selectedCategory, setSelectedCategory] = useState('all');
     const productsDb = 'https://react-webshop-07-22-default-rtdb.europe-west1.firebasedatabase.app/products.json';
-
+    const [isLoading, setLoading] = useState(false);
     //[].map ( => uus_väärtus)  
     //[].sort( => pluss/miinus ) võrdleb, kas tuleb miinus märgiga või plussiga tehe
     //[].filter( => true/false )  vaatab, kas vaste sobib voi ei
     
     //uef on lühend
     useEffect(() => { // see funktsioon laheb kaima lehele tulles
+        setLoading(true);
         fetch(productsDb) //fetch on alati asünkroonne ( ütleb koodile, et mine edasi)
         .then(response => response.json()) // staatuskood - 200 /400-404
         .then(data => {
-            setProducts(data);
-            setDatabaseProducts(data);
+            data = data.filter(element => element.active === true)
+            setProducts(data || []);
+            setDatabaseProducts(data || []);
+            setLoading(false);
         });
     }, []);
 
@@ -85,9 +89,11 @@ function HomePage() {
             theme:"dark"
             });
     }
+    
     return ( 
     <div>
     <ToastContainer />
+    {products.length === 0 && <Spinner />}
         <div 
         className={selectedCategory === 'all' ? 'active-category' : undefined} 
         onClick={() => filterByCategory('all')}>

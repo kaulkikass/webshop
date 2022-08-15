@@ -13,6 +13,7 @@ import MaintainShops from './pages/admin/MaintainShops';
 import MaintainCategories from './pages/admin/MaintainCategories';
 
 import NavigationBar from './components/NavigationBar';
+import NotFound from './pages/NotFound';
 
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
           <Route path='admin/halda-tooteid' exact element = { <MaintainProducts /> } />
           <Route path='admin/halda-poode' exact element = { <MaintainShops /> } />
           <Route path='admin/halda-kategooriaid' exact element = { <MaintainCategories /> } />
+          <Route path='*' exact element = { <NotFound /> } />
         </Routes>
     </div>
   );

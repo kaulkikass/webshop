@@ -17,3 +17,11 @@
 .map {
   height: 300px;
 }
+
+.active-product {
+  border:1px solid green;
+}
+
+.inactive-product {
+  border: 1px solid red;
+}

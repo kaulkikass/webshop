@@ -19,11 +19,11 @@ function AddProduct() {
     useEffect(() => {  
         fetch(productsDb)
         .then(res => res.json())
-        .then(data => setProducts(data)); 
+        .then(data => setProducts(data || [])); 
     
         fetch(categoriesDb)
         .then(res => res.json())
-        .then(data => setCategories(data)); 
+        .then(data => setCategories(data || [])); 
       }, []);
 
     
