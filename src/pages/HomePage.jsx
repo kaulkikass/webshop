@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import Carousel from 'react-bootstrap/Carousel';
-import Dropdown from "react-bootstrap/Dropdown";
-import DropdownButton from "react-bootstrap/DropdownButton";
+
 import {Link} from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import Spinner from '../components/Spinner';
+import Pagination from 'react-bootstrap/Pagination';
+import SortDropdown from '../components/home/SortDropdown';
 
 
 function HomePage() {
@@ -18,6 +19,8 @@ function HomePage() {
     const [selectedCategory, setSelectedCategory] = useState('all');
     const productsDb = 'https://react-webshop-07-22-default-rtdb.europe-west1.firebasedatabase.app/products.json';
     const [isLoading, setLoading] = useState(false);
+    const [activePage, setActivePage] = useState(2);
+    const [filteredProducts, setFilteredProducts] = useState([]);
     //[].map ( => uus_väärtus)  
     //[].sort( => pluss/miinus ) võrdleb, kas tuleb miinus märgiga või plussiga tehe
     //[].filter( => true/false )  vaatab, kas vaste sobib voi ei
@@ -29,42 +32,32 @@ function HomePage() {
         .then(response => response.json()) // staatuskood - 200 /400-404
         .then(data => {
             data = data.filter(element => element.active === true)
-            setProducts(data || []);
+            setProducts(data.slice(0,20) || []);
+            setFilteredProducts(data || []);
             setDatabaseProducts(data || []);
             setLoading(false);
         });
     }, []);
 
-    //sort muteerib --mutates
-    const sortAZ = () => {
-        // muteerib --- mutates
-        const result = [...products].sort((a,b)=> a.name.localeCompare(b.name));
-        setProducts(result);
-      }
-    
-      const sortZA = () => {
-        const result = [...products].sort((a,b)=> b.name.localeCompare(a.name));
-        setProducts(result);
-      }
-    
-      const sortPriceAsc = () => {
-        const result = [...products].sort((a,b)=> a.price - b.price);
-        setProducts(result);
-      }
 
-      const sortPriceDesc = () => {
-        const result = [...products].sort((a,b)=> b.price - a.price);
-        setProducts(result);
-      }
+    
+    let pages = [];
+    for (let number = 1; number < filteredProducts.length /20+1; number++) {
+    pages.push(number);
+    }
 
+    
     const filterByCategory = (catergoryClicked) => {
         if (catergoryClicked === 'all') {
-            setProducts(databaseProducts);
+            setProducts(databaseProducts.slice(0,20));
+            setFilteredProducts(databaseProducts)
         } else {
             const result = databaseProducts.filter(element => element.category === catergoryClicked)
-            setProducts(result);
+            setProducts(result.slice(0,20));
+            setFilteredProducts(result);
         }
         setSelectedCategory(catergoryClicked);
+        setActivePage(1);
     }
 
     // {product: {id, name, category} quantity: 1} objekt objekti sees
@@ -105,6 +98,12 @@ function HomePage() {
           .then(data => setImages(data || []))
       }, []);
 
+
+      const changePage = (number) => {
+        setActivePage(number);
+        setProducts(filteredProducts.slice(number*20-20,number*20));
+      }
+
     return ( 
     <div>
     <Carousel>
@@ -133,17 +132,12 @@ function HomePage() {
              key={element} onClick={() => filterByCategory(element)}>
                 {element}
             </div>) }        
-        <DropdownButton id="dropdown-basic-button" title="Sorteeri ">
-            <Dropdown.Item onClick={() => sortAZ()}>A - Z</Dropdown.Item>
-            <Dropdown.Item onClick={() => sortZA()}>Z - A</Dropdown.Item>
-            <Dropdown.Item onClick={() => sortPriceAsc()}>
-            Kasvav hind
-            </Dropdown.Item>
-            <Dropdown.Item onClick={() => sortPriceDesc()}>
-            Kahanev hind
-            </Dropdown.Item>
-        </DropdownButton>
-        <div>{products.length} toodet leitud</div>
+        <SortDropdown 
+          filteredProducts = {filteredProducts}
+          updateProducts = {setProducts}
+          updatePage = {setActivePage}
+        /> 
+        <div>{filteredProducts.length} toodet leitud</div>
         {products.map(element => 
         <div key={element.id}>
             <Link to = {"/toode/" + element.id}>
@@ -154,6 +148,10 @@ function HomePage() {
             <Button variant='success' onClick={() => addToCart(element)}>Lisa ostukorvi</Button>
         </div>
         )};
+        <Pagination>{pages.map(number =>
+          <Pagination.Item onClick={() => changePage(number)} key={number} active={number === activePage}>
+            {number}
+          </Pagination.Item>)}</Pagination>
     </div>
     );
 }

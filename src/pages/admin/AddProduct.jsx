@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
+import FileUpload from '../../components/FileUpload';
 
 
 
@@ -10,8 +11,10 @@ function AddProduct() {
     const priceRef = useRef();
     const descriptionRef = useRef();
     const categoryRef = useRef();
-    const imageRef = useRef();
+   // const imageRef = useRef();
     const activeRef = useRef();
+    const [message, setMessage] = useState("");
+    const [image, setImage] = useState("");
     const productsDb = 'https://react-webshop-07-22-default-rtdb.europe-west1.firebasedatabase.app/products.json';
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);                                  ///!!!! categories
@@ -28,7 +31,7 @@ function AddProduct() {
         .then(data => setCategories(data || [])); 
       }, []);
 
-      const [message, setMessage] = useState("");
+     
 
     
       const add = () => {
@@ -50,10 +53,10 @@ function AddProduct() {
             setMessage("Kirjeldus täitmata");
             return;                           // return lõpetab funktsiooni
         }
-        if (imageRef.current.value === "") {
+       /*  if (imageRef.current.value === "") {
             setMessage("Pilt täitmata");
             return;                           // return lõpetab funktsiooni
-        }
+        } */
 
       <div>{message}</div>
         const newProduct = {
@@ -62,7 +65,7 @@ function AddProduct() {
           price: Number(priceRef.current.value),
           description: descriptionRef.current.value,
           category: categoryRef.current.value,
-          image: imageRef.current.value,
+          image: image,
           active: activeRef.current.checked
         }
         products.push(newProduct);
@@ -109,7 +112,8 @@ function AddProduct() {
             {categories.map(element => <option>{element.name}</option>)}
         </select> <br />
         <label>Image</label><br />
-        <input ref={imageRef} type="text" /> <br />
+        {/* <input ref={imageRef} type="text" /> <br /> */}
+        <FileUpload onSendPictureUrl={setImage} />
         <label>Active</label><br />
         <input ref={activeRef} type="checkbox" /> <br />
         <button disabled={idUnique === false} onClick={() => add()}>Lisa toode</button>
