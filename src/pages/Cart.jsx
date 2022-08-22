@@ -58,6 +58,34 @@ function Cart() {
         sessionStorage.removeItem('parcelMachine');
     }
 
+    const [paymentError, setPaymentError] = useState("");
+
+    const pay = () => {
+        const paymentData = {
+            "api_username": "92ddcfab96e34a5f",
+            "account_name": "EUR3D1",
+            "amount": calculateCartSum(),
+            "order_reference": Math.random()*999999,
+            "nonce": "a9b7f7" + new Date() + Math.random() * 999999,
+            "timestamp": new Date(),
+            "customer_url": "https://react-webshop-07-22.web.app/tellimus"
+        }
+            
+        fetch("https://igw-demo.every-pay.com/api/v4/payments/oneoff", {
+            method:"POST",
+            body: JSON.stringify(paymentData),
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Basic OTJkZGNmYWI5NmUzNGE1Zjo4Y2QxOWU5OWU5YzJjMjA4ZWU1NjNhYmY3ZDBlNGRhZA=="
+            }
+        }).then(res => res.json()).then(data => {
+            if (data.payment_link === undefined) {
+                setPaymentError("Maksma minek ei onnestunud, proovi mone aja parast uuesti!")
+            } else {
+            window.location.href= data.payment_link}
+        })
+    }
+
     return ( 
     <div>
         {cart.map((element,index) => 
@@ -73,11 +101,18 @@ function Cart() {
             <div className={styles.total}>{(element.quantity * element.product.price).toFixed(2)} $</div>
             <img className={styles.button} onClick={() => deleteProduct(index)} src={require('../assets/cancel.png')} alt='remove'/>
         </div>)}
+        { cart.length > 0 && 
         <div className={styles.sum}>
-        { selectedPM === "" && cart.length > 0 && <select onChange={selectPM} ref={pmRef}>{parcelMachines.map(element => <option key={element.NAME}>{element.NAME}</option>)}</select>}
-        { selectedPM !== "" && cart.length > 0 && <div>{selectedPM} <button onClick={unSelectPM}>X</button> </div>}
-        { cart.length > 0 && <div>{calculateCartSum().toFixed(2)} $</div>}
-        </div>
+            { selectedPM === "" &&
+            <select onChange={selectPM} ref={pmRef}>
+                {parcelMachines.map(element => <option key={element.NAME}>{element.NAME}</option>)}
+            </select>}
+            { selectedPM !== "" && <div>{selectedPM} <button onClick={unSelectPM}>X</button> </div>}
+
+       <div>{calculateCartSum().toFixed(2)} €</div>
+       <button onClick={pay}>Maksa</button>
+       <div>{paymentError}</div>
+    </div>}
     </div> 
     );
 }

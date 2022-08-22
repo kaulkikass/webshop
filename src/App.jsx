@@ -14,6 +14,7 @@ import MaintainCategories from './pages/admin/MaintainCategories';
 
 import NavigationBar from './components/NavigationBar';
 import NotFound from './pages/NotFound';
+import PaymentCompleted from './pages/admin/PaymentCompleted';
 
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
           <Route path='meist' exact element = { <AboutUs /> } />
           <Route path='poed' exact element = { <Shops /> } />
           <Route path='ostukorv' exact element = { <Cart /> } />
+          <Route path='tellimus' exact element = { <PaymentCompleted /> } />
           <Route path='toode/:productId' exact element = { <SingleProduct /> } />
           <Route path='admin' exact element = { <AdminHome /> } />
           <Route path='admin/lisa-toode' exact element = { <AddProduct /> } />

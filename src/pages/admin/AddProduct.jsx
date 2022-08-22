@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect} from 'react';
+import { useNavigate } from 'react-router-dom';
 
 
 
@@ -15,6 +16,7 @@ function AddProduct() {
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);                                  ///!!!! categories
     const categoriesDb = 'https://react-webshop-07-22-default-rtdb.europe-west1.firebasedatabase.app/categories.json';
+    const navigate = useNavigate();
 
     useEffect(() => {  
         fetch(productsDb)
@@ -26,8 +28,34 @@ function AddProduct() {
         .then(data => setCategories(data || [])); 
       }, []);
 
+      const [message, setMessage] = useState("");
+
     
       const add = () => {
+        //kui vasak pool väär, võta parem
+        //koodi efektiivsuse mõttes, võiks panna vasakule poole koik suurema toenanosusega true olev voi koige lihtsamini leitav true
+        if (idRef.current.value === "") {
+            setMessage("Id väli täitmata");
+            return;                           // return lõpetab funktsiooni
+        }
+        if (nameRef.current.value === "") {
+            setMessage("Nimi on täitmata");
+            return;                           // return lõpetab funktsiooni
+        }
+        if (priceRef.current.value === "") {
+            setMessage("hind on täitmata");
+            return;                           // return lõpetab funktsiooni
+        }
+        if (descriptionRef.current.value === "") {
+            setMessage("Kirjeldus täitmata");
+            return;                           // return lõpetab funktsiooni
+        }
+        if (imageRef.current.value === "") {
+            setMessage("Pilt täitmata");
+            return;                           // return lõpetab funktsiooni
+        }
+
+      <div>{message}</div>
         const newProduct = {
           id: Number(idRef.current.value),
           name: nameRef.current.value,
@@ -46,7 +74,7 @@ function AddProduct() {
             headers: { //mis kujul andmed pannakse
                 'Content-Type': 'application/json'
             }
-        })
+        }).then(() => navigate("/admin/halda-tooteid"))
     }
 
 
@@ -65,6 +93,7 @@ function AddProduct() {
 
     return ( 
     <div>
+        {message} <br />
         { idUnique === false && <div>Sisestasid mitteunikaalse ID!</div>}
         <label>ID</label><br />
         <input onChange={checkIdUniqueness} ref={idRef} type="text" /><br />

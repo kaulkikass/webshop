@@ -25,3 +25,8 @@
 .inactive-product {
   border: 1px solid red;
 }
+
+.carousel {
+    width: 500px;
+    margin: auto;
+}
