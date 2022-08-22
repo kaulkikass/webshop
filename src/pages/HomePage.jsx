@@ -120,7 +120,7 @@ function HomePage() {
     </Carousel>
 
     <ToastContainer />
-    {products.length === 0 && <Spinner />}
+    {isLoading === true && <Spinner />}
         <div 
         className={selectedCategory === 'all' ? 'active-category' : undefined} 
         onClick={() => filterByCategory('all')}>
