@@ -15,6 +15,7 @@ import MaintainCategories from './pages/admin/MaintainCategories';
 import NavigationBar from './components/NavigationBar';
 import NotFound from './pages/NotFound';
 import PaymentCompleted from './pages/admin/PaymentCompleted';
+import SignIn from './pages/SignIn';
 
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
           <Route path='tellimus' exact element = { <PaymentCompleted /> } />
           <Route path='toode/:productId' exact element = { <SingleProduct /> } />
           <Route path='admin' exact element = { <AdminHome /> } />
+          <Route path='logi-sisse' exact element = { <SignIn /> } />
           <Route path='admin/lisa-toode' exact element = { <AddProduct /> } />
           <Route path='admin/muuda/:id' exact element = { <EditProduct /> } />
           <Route path='admin/halda-tooteid' exact element = { <MaintainProducts /> } />

@@ -3,6 +3,7 @@ import ParcelMachine from "../components/cart/ParcelMachine";
 import Payment from "../components/cart/Payment";
 /* import omnivaParcelMachines from '../omniva.json'; */
 import styles from '../css/Cart.module.css';
+import { cartSumService } from '../store/cartSumService';
 
 
 
@@ -13,6 +14,8 @@ function Cart() {
         cart[index].quantity = cart[index].quantity + 1;
         setCart(cart.slice());
         sessionStorage.setItem('cart', JSON.stringify(cart));
+        cartSumService.sendCartSum(calculateCartSum());
+        
     }
 
     const decreaseQuantity = (index) => {
@@ -22,12 +25,14 @@ function Cart() {
         }
         setCart(cart.slice());
         sessionStorage.setItem('cart', JSON.stringify(cart));
+        cartSumService.sendCartSum(calculateCartSum());
     }
 
     const deleteProduct = (index) => {
         cart.splice(index,1);
         setCart(cart.slice());
         sessionStorage.setItem('cart', JSON.stringify(cart));
+        cartSumService.sendCartSum(calculateCartSum());
     }
 
     const calculateCartSum = () => {
