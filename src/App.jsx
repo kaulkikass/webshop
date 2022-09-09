@@ -1,5 +1,5 @@
 import './App.css';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import AboutUs from './pages/AboutUs';
 import Shops from './pages/Shops';
@@ -16,14 +16,10 @@ import NavigationBar from './components/NavigationBar';
 import NotFound from './pages/NotFound';
 import PaymentCompleted from './pages/admin/PaymentCompleted';
 import SignIn from './pages/SignIn';
-import AddUser from './pages/admin/AddUser';
-import { useContext } from 'react';
-import AuthContext from './store/AuthContext';
 
 
 function App() {
 
-  const authCtx = useContext(AuthContext);
  
 
   return (
@@ -36,18 +32,13 @@ function App() {
           <Route path='ostukorv' exact element = { <Cart /> } />
           <Route path='tellimus' exact element = { <PaymentCompleted /> } />
           <Route path='toode/:productId' exact element = { <SingleProduct /> } />
-          <Route path='logi-sisse' exact element = { <SignIn /> } />
-          {authCtx.loggedIn === true && <>
           <Route path='admin' exact element = { <AdminHome /> } />
-          <Route path='admin/lisa-kasutajaid' exact element = { <AddUser/> } />
+          <Route path='logi-sisse' exact element = { <SignIn /> } />
           <Route path='admin/lisa-toode' exact element = { <AddProduct /> } />
           <Route path='admin/muuda/:id' exact element = { <EditProduct /> } />
           <Route path='admin/halda-tooteid' exact element = { <MaintainProducts /> } />
           <Route path='admin/halda-poode' exact element = { <MaintainShops /> } />
           <Route path='admin/halda-kategooriaid' exact element = { <MaintainCategories /> } />
-          </>}
-          {authCtx.loggedIn === false && 
-          <Route path="admin/*" exact element={ <Navigate to="/logi-sisse" /> } />}
           <Route path='*' exact element = { <NotFound /> } />
         </Routes>
     </div>

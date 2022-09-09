@@ -7,8 +7,6 @@ import './index.css';
 import './i18n';
 import App from './App';
 import { BrowserRouter } from 'react-router-dom';
-import { AuthContextProvider } from './store/AuthContext';
-import { CartSumContextProvider } from './store/CartSumContext';
 
 
 
@@ -16,11 +14,7 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <AuthContextProvider>
-      <CartSumContextProvider>
-        <App />
-        </CartSumContextProvider>
-      </AuthContextProvider>
+    <App />
     </BrowserRouter>
   </React.StrictMode>
 );
