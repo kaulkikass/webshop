@@ -1,0 +1,10 @@
+{
+    "navbar.admin-button": "Admin vaatesse",
+    "navbar.about-button": "Meist",
+    "navbar.shops-button": "Meie poed",
+    "navbar.cart-button": "Ostukorv",
+    "form.email": "E-mail",
+    "INVALID_EMAIL": "Vigane email",
+    "MISSING_PASSWORD": "Parool puudub",
+    "WEAK_PASSWORD : Password should be at least 6 characters": "Parool peab olema vähemalt 6 tähte"
+  }
